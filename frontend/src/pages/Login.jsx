@@ -67,50 +67,44 @@ export default function Login() {
         {/* Hero text */}
         <motion.div initial={{opacity:0,y:40}} animate={{opacity:1,y:0}} transition={{delay:0.3,duration:1.2,ease:[0.16,1,0.3,1]}}
           style={{textAlign:'center',marginBottom:'5rem'}}>
-          <h1 className="white-neon" style={{fontSize:'clamp(3.5rem,10vw,6.5rem)',lineHeight:0.85,marginBottom:'2rem',fontWeight:800,letterSpacing:'-0.06em'}}>
+          <h1 className="black-text" style={{fontSize:'clamp(3.5rem,10vw,6.5rem)',lineHeight:0.85,marginBottom:'2rem'}}>
             TRACK EVERY<br/>
             GOAL.
           </h1>
-          <p style={{color:'var(--muted)',fontSize:'1.1rem',lineHeight:1.6,maxWidth:460,margin:'0 auto',fontFamily:'DM Mono',letterSpacing:'-0.01em',opacity:0.8}}>
+          <p className="black-text" style={{fontSize:'1.1rem',lineHeight:1.6,maxWidth:460,margin:'0 auto',fontFamily:'DM Mono',letterSpacing:'-0.01em'}}>
             AI-powered command center for conquering habits, destroying addictions, and becoming unstoppable.
           </p>
         </motion.div>
 
-        {/* Card with gradient animated border */}
-        <motion.div initial={{opacity:0,y:40,scale:0.98}} animate={{opacity:1,y:0,scale:1}} transition={{delay:0.6,duration:1,ease:[0.16,1,0.3,1]}}>
-          <div className="gradient-border" style={{ background:'linear-gradient(135deg,rgba(255,61,0,0.4),rgba(255,255,255,0.1),rgba(255,61,0,0.4))' }}>
-            <div ref={cardRef} className="glass" onMouseMove={handleTilt} onMouseLeave={resetTilt}
-              style={{padding:'4rem 3.5rem',transition:'transform 0.2s cubic-bezier(0.16,1,0.3,1)'}}>
-              <div className="scan-line" />
+        {/* Card with high-contrast light glass */}
+        <motion.div initial={{opacity:0,y:40,scale:0.98}} animate={{opacity:1,y:0,scale:1}} transition={{delay:0.6,duration:1}}>
+          <div className="gradient-border" style={{ background:'white', padding:'2px' }}>
+            <div ref={cardRef} className="light-glass" onMouseMove={handleTilt} onMouseLeave={resetTilt}
+              style={{padding:'4rem 3.5rem',borderRadius:'22px',transition:'transform 0.2s'}}>
               
               <AnimatePresence mode="wait">
                 {!sent?(
                   <motion.div key="form" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0,y:-20}}>
                     <div style={{textAlign:'center',marginBottom:'2.5rem'}}>
-                      <p className="hud-label">AUTH_PROTOCOL: SECURE_LINK</p>
+                      <p style={{color:'black',fontWeight:800,letterSpacing:'0.2em',fontSize:'0.7rem'}}>✉️ ACCESS_ID REQUIRED</p>
                     </div>
                     <form onSubmit={handleLogin} style={{display:'flex',flexDirection:'column',gap:'1.5rem'}}>
-                      <div style={{position:'relative'}}>
-                        <input type="email" className="input" placeholder="ACCESS_ID@DOMAIN.COM" value={email}
-                          onChange={e=>setEmail(e.target.value)} required 
-                          style={{textAlign:'center',fontSize:'1rem',background:'rgba(255,255,255,0.01)',borderColor:'rgba(255,255,255,0.05)',borderRadius:'12px',letterSpacing:'0.05em'}}/>
-                      </div>
-                      <MagneticButton type="submit" className="btn btn-fire" disabled={loading}
-                        style={{width:'100%',borderRadius:'12px'}}>
-                        {loading?'INITIALIZING_SESSION...':'⚡ ACTIVATE COMMAND CENTER'}
+                      <input type="email" className="input" placeholder="YOU@EXAMPLE.COM" value={email}
+                        onChange={e=>setEmail(e.target.value)} required 
+                        style={{textAlign:'center',fontSize:'1.1rem',background:'white',color:'black',borderColor:'black',borderWidth:'2px',borderRadius:'12px',fontWeight:700}}/>
+                      <MagneticButton type="submit" className="btn" disabled={loading}
+                        style={{width:'100%',background:'black',color:'white',borderRadius:'12px',padding:'1.2rem',fontWeight:800,fontSize:'1rem'}}>
+                        {loading?'VERIFYING...':'ACTIVATE COMMAND CENTER →'}
                       </MagneticButton>
                     </form>
-                    <div className="divider" style={{opacity:0.1,margin:'2.5rem 0'}}/>
-                    <p className="hud-label" style={{textAlign:'center',fontSize:'0.55rem'}}>ENCRYPTION: AES-256-GCM</p>
+                    <div className="divider" style={{background:'rgba(0,0,0,0.1)',margin:'2.5rem 0'}}/>
+                    <p style={{textAlign:'center',fontSize:'0.6rem',color:'black',opacity:0.6,fontWeight:700,letterSpacing:'0.1em'}}>ENCRYPTED MAGIC LINK ACCESS</p>
                   </motion.div>
                 ):(
                   <motion.div key="sent" initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} style={{textAlign:'center',padding:'2rem 0'}}>
-                    <div style={{width:60,height:60,borderRadius:'50%',border:'2px solid var(--fire)',margin:'0 auto 1.5rem',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                      <motion.div animate={{scale:[1,1.2,1]}} transition={{repeat:Infinity,duration:2}} style={{width:12,height:12,borderRadius:'50%',background:'var(--fire)'}}/>
-                    </div>
-                    <h3 className="white-neon" style={{fontSize:'2.2rem',marginBottom:'1rem',letterSpacing:'-0.04em'}}>LINK_DEPLOYED</h3>
-                    <p style={{color:'var(--muted)',fontSize:'0.95rem',lineHeight:1.8,fontFamily:'DM Mono'}}>Awaiting verification at:<br/><span style={{color:'var(--text)',opacity:1}}>{email}</span></p>
-                    <button className="btn btn-ghost" onClick={()=>setSent(false)} style={{marginTop:'2.5rem',fontSize:'0.65rem',borderRadius:'8px'}}>RE-ESTABLISH_CONNECTION</button>
+                    <h3 style={{fontSize:'2.5rem',marginBottom:'1rem',color:'black',fontWeight:900}}>LINK SENT</h3>
+                    <p style={{color:'black',fontSize:'1.1rem',lineHeight:1.8,fontWeight:600}}>Check your inbox at:<br/><span style={{textDecoration:'underline'}}>{email}</span></p>
+                    <button className="btn" onClick={()=>setSent(false)} style={{marginTop:'2.5rem',background:'black',color:'white',fontSize:'0.7rem',borderRadius:'8px'}}>RETRY EMAIL</button>
                   </motion.div>
                 )}
               </AnimatePresence>
