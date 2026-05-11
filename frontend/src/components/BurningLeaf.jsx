@@ -3,26 +3,29 @@ import { motion } from 'framer-motion';
 export default function BurningLeaf({ side = 'left' }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: side === 'left' ? -100 : 100 }}
+      initial={{ opacity: 0, x: side === 'left' ? -200 : 200 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 1.5, ease: 'easeOut' }}
       style={{
         position: 'fixed',
-        bottom: '20px',
-        [side]: '20px',
-        zIndex: 100,
-        width: '180px',
+        bottom: '40px',
+        [side]: '40px',
+        zIndex: 999,
+        width: '220px',
         pointerEvents: 'none',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        background: 'rgba(0,0,0,0.2)',
+        borderRadius: '20px',
+        padding: '10px'
       }}
     >
-      <div style={{ position: 'relative' }}>
-        {/* Mirror for right side */}
+      <div style={{ position: 'relative', width: '100%' }}>
         <motion.img
           src="/leaf.png"
           alt="Burning Leaf"
+          onError={(e) => { e.target.style.display = 'none'; console.error('Leaf image failed to load'); }}
           style={{
             width: '100%',
             filter: 'drop-shadow(0 0 15px rgba(188,255,71,0.4))',
