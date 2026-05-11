@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase, api } from '../api/client';
+import { api } from '../api/client';
 import ParticleCanvas from '../components/ParticleCanvas';
 import CountUp from '../components/CountUp';
 
@@ -31,7 +31,7 @@ function Clock(){
   return <span style={{fontFamily:'DM Mono',fontSize:'0.78rem',color:'var(--muted)',letterSpacing:'0.12em'}}>{t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span>;
 }
 
-export default function Dashboard({session}){
+export default function Dashboard(){
   const [goals,setGoals]=useState([]);const [checkins,setCheckins]=useState([]);
   const [loadingGoals,setLoadingGoals]=useState(true);const [activeTab,setActiveTab]=useState('today');
   const [aiResult,setAiResult]=useState(null);const [aiLoading,setAiLoading]=useState(false);
@@ -41,8 +41,7 @@ export default function Dashboard({session}){
   const [logs,setLogs]=useState({});const [mood,setMood]=useState(3);const [journal,setJournal]=useState('');
   const [toast,setToast]=useState(null);const loaded=useRef(false);
 
-  const user=session.user;
-  const name=user.user_metadata?.full_name?.split(' ')[0]||user.email?.split('@')[0]||'Founder';
+  const name='Founder';
   const overall=goals.length?Math.round(goals.reduce((a,g)=>a+(g.current_progress||0),0)/goals.length):0;
 
   useEffect(()=>{if(loaded.current)return;loaded.current=true;loadAll()},[]);
@@ -152,7 +151,6 @@ export default function Dashboard({session}){
             <div style={{display:'flex',flexDirection:'column',gap:'0.5rem'}}>
               <button className="btn btn-lime" onClick={handleRunAI} disabled={aiLoading} style={{padding:'0.65rem 1.2rem',fontSize:'0.76rem'}}>
                 {aiLoading?'⏳':'⚡'} AI Analysis</button>
-              <button className="btn btn-ghost" onClick={()=>supabase.auth.signOut()} style={{padding:'0.6rem 1.2rem',fontSize:'0.76rem'}}>Sign Out</button>
             </div>
           </div>
         </motion.header>
@@ -230,7 +228,7 @@ export default function Dashboard({session}){
                     <motion.button className="btn btn-lime" onClick={handleCheckin} disabled={saving||saved}
                       whileHover={{scale:1.04}} whileTap={{scale:0.96}}
                       style={{alignSelf:'flex-start',padding:'1rem 2.5rem',fontSize:'0.95rem',position:'relative',overflow:'hidden'}}>
-                      {!saving&&!saved&&<span style={{position:'absolute',top:0,left:'-100%',width:'50%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)',animation:'shine 2s ease-in-out infinite'}}/>}
+                      {!saving&&!saved&&<span style={{position:'absolute',top:0,left:'-100%',width:'50%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)',animation:'shimmer 1s infinite'}}/>}
                       {saved?'✅ Saved!':saving?'⏳ Saving...':'💾 Save Check-in'}</motion.button>
                   </div>
                 )}
@@ -264,7 +262,7 @@ export default function Dashboard({session}){
                       Analyzes your 7-day trajectory, calculates real success %, and gives you personalized Hinglish feedback.</p>
                     <motion.button className="btn btn-lime" onClick={handleRunAI} whileHover={{scale:1.08}} whileTap={{scale:0.95}}
                       style={{padding:'1.2rem 3.5rem',fontSize:'1rem',position:'relative',overflow:'hidden'}}>
-                      <span style={{position:'absolute',top:0,left:'-100%',width:'50%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)',animation:'shine 2s ease-in-out infinite'}}/>
+                      <span style={{position:'absolute',top:0,left:'-100%',width:'50%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)',animation:'shimmer 1s infinite'}}/>
                       ⚡ Run AI Analysis</motion.button>
                   </div></div>
                 )}
