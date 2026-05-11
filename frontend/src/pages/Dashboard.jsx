@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, api } from '../api/client';
 import ParticleCanvas from '../components/ParticleCanvas';
 import CountUp from '../components/CountUp';
+import BurningLeaf from '../components/BurningLeaf';
 
 const C=['#BCFF47','#00E5CC','#9B7FFF','#FF6B2B','#3DFF8F'];
 const CD=['rgba(188,255,71,0.07)','rgba(0,229,204,0.07)','rgba(155,127,255,0.07)','rgba(255,107,43,0.07)','rgba(61,255,143,0.07)'];
@@ -84,6 +85,9 @@ export default function Dashboard({session}){
     <div style={{minHeight:'100vh',position:'relative'}}>
       <div className="mesh-bg"><div className="mesh-blob"/><div className="mesh-blob"/><div className="mesh-blob"/><div className="mesh-blob"/></div>
       <div className="grid-overlay"/><ParticleCanvas/>
+      
+      <BurningLeaf side="left" />
+      <BurningLeaf side="right" />
 
       {/* Toast */}
       <AnimatePresence>{toast&&(

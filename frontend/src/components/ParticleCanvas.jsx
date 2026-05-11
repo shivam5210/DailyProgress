@@ -54,39 +54,48 @@ export default function ParticleCanvas() {
       reset() {
         const spawnSide = Math.random();
         if (spawnSide < 0.5) {
-          this.x = Math.random() * (W * 0.4) - 100;
-          this.y = -50;
+          this.x = Math.random() * (W * 0.4) - 200;
+          this.y = -100;
         } else {
-          this.x = -50;
-          this.y = Math.random() * (H * 0.4) - 100;
+          this.x = -100;
+          this.y = Math.random() * (H * 0.4) - 200;
         }
-        this.speed = Math.random() * 4 + 6;
-        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.2;
+        this.speed = Math.random() * 8 + 10; // Faster
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
         this.vx = Math.cos(this.angle) * this.speed;
         this.vy = Math.sin(this.angle) * this.speed;
-        this.size = Math.random() * 2 + 1;
-        this.color = ['#FF4D00', '#FF8E00', '#FFCC00'][Math.floor(Math.random() * 3)];
+        this.size = Math.random() * 4 + 3; // Bigger
+        this.color = ['#FF2D00', '#FF5E00', '#FFCC00', '#FF0055'][Math.floor(Math.random() * 4)];
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        if (this.x > W + 200 || this.y > H + 200) this.reset();
+        if (this.x > W + 400 || this.y > H + 400) this.reset();
       }
       draw() {
         if (!isFinite(this.x) || !isFinite(this.y) || !isFinite(this.vx) || !isFinite(this.vy)) return;
         ctx.save();
-        const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.vx * 12, this.y - this.vy * 12);
+        const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.vx * 25, this.y - this.vy * 25);
         grad.addColorStop(0, this.color);
+        grad.addColorStop(0.2, this.color);
         grad.addColorStop(1, 'transparent');
         ctx.beginPath();
         ctx.strokeStyle = grad;
         ctx.lineWidth = this.size;
         ctx.lineCap = 'round';
         ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x - this.vx * 10, this.y - this.vy * 10);
-        ctx.shadowBlur = 20;
+        ctx.lineTo(this.x - this.vx * 20, this.y - this.vy * 20); // Longer tail
+        ctx.shadowBlur = 40; // Intense fire glow
         ctx.shadowColor = this.color;
         ctx.stroke();
+        
+        // Head glow
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        
         ctx.restore();
       }
     }
