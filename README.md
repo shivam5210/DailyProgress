@@ -241,14 +241,6 @@ npm run dev
 
 ---
 
-## 👤 Author
-
-**Shivam** — Founder of [vsquaree.com](https://vsquaree.com)
-
-> Built this to track my own journey: quit smoking, quit weed, build contacts, and grow vsquaree daily. If this helps even one other founder, mission accomplished.
-
----
-
 ## 📄 License
 
 MIT — free to use, fork, and build on.
