@@ -4,6 +4,7 @@ import { supabase } from './api/client';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import './index.css';
+import InteractiveLeaf from './components/InteractiveLeaf';
 
 function App() {
   const [session, setSession] = useState(undefined); // undefined = loading
@@ -26,6 +27,8 @@ function App() {
 
   return (
     <Router>
+      <InteractiveLeaf side="left" />
+      <InteractiveLeaf side="right" />
       <Routes>
         <Route path="/" element={!session ? <Login /> : <Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={session ? <Dashboard session={session} /> : <Navigate to="/" replace />} />
