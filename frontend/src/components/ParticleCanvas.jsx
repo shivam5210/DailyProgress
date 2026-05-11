@@ -89,6 +89,7 @@ export default function ParticleCanvas() {
         ctx.stroke();
         ctx.restore();
       }
+    }
     class Ember {
       constructor() { this.reset(); }
       reset() {
