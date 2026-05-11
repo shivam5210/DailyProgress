@@ -48,6 +48,50 @@ export default function ParticleCanvas() {
       }
     }
 
+    class Comet {
+      constructor() { this.reset(); }
+      reset() {
+        const spawnSide = Math.random();
+        if (spawnSide < 0.5) {
+          this.x = Math.random() * (W * 0.4) - 100;
+          this.y = -50;
+        } else {
+          this.x = -50;
+          this.y = Math.random() * (H * 0.4) - 100;
+        }
+        this.speed = Math.random() * 4 + 6;
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.2;
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.size = Math.random() * 2 + 1;
+        this.color = ['#FF4D00', '#FF8E00', '#FFCC00'][Math.floor(Math.random() * 3)];
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x > W + 200 || this.y > H + 200) this.reset();
+      }
+      draw() {
+        ctx.save();
+        const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.vx * 12, this.y - this.vy * 12);
+        grad.addColorStop(0, this.color);
+        grad.addColorStop(1, 'transparent');
+        ctx.beginPath();
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = this.size;
+        ctx.lineCap = 'round';
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.vx * 10, this.y - this.vy * 10);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = this.color;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    const comets = [];
+    for (let i = 0; i < 5; i++) comets.push(new Comet());
+
     resize();
     for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
@@ -73,6 +117,7 @@ export default function ParticleCanvas() {
     function loop() {
       ctx.clearRect(0, 0, W, H);
       particles.forEach(p => { p.update(); p.draw(); });
+      comets.forEach(c => { c.update(); c.draw(); });
       drawLines();
       animId = requestAnimationFrame(loop);
     }
