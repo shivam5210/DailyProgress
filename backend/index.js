@@ -5,7 +5,6 @@ import authRoutes from './routes/auth.js';
 import goalRoutes from './routes/goals.js';
 import checkinRoutes from './routes/checkin.js';
 import engineRoutes from './routes/engine.js';
-import { verifyToken } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -13,13 +12,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Public routes
+// All routes are now public
 app.use('/api/auth', authRoutes);
-
-// Protected routes
-app.use('/api/goals', verifyToken, goalRoutes);
-app.use('/api/checkins', verifyToken, checkinRoutes);
-app.use('/api/engine', verifyToken, engineRoutes);
+app.use('/api/goals', goalRoutes);
+app.use('/api/checkins', checkinRoutes);
+app.use('/api/engine', engineRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
