@@ -3,9 +3,18 @@
 :root {
   --bg:#030308; --bg1:#080812;
   --lime:#BCFF47; --teal:#00E5CC; --violet:#9B7FFF; --orange:#FF6B2B; --green:#3DFF8F; --red:#FF4757; --pink:#FF6BBA; --blue:#5B8DEF;
-  --text:#F2F2F2; --muted:rgba(242,242,242,0.35); --border:rgba(255,255,255,0.06);
+  --fire:#FF4D00; --amber:#FFCC00; --lava:#FF2D00;
+  --text:#F2F2F2; --muted:rgba(242,242,242,0.45); --border:rgba(255,255,255,0.08);
   --card:rgba(255,255,255,0.012); --card-h:rgba(255,255,255,0.035);
-  --shadow:0 12px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04);
+  --shadow:0 12px 60px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.05);
+}
+.fire-glow { text-shadow: 0 0 20px var(--fire), 0 0 40px var(--lava); }
+.amber-glow { text-shadow: 0 0 15px var(--amber); }
+.lava-text {
+  background: linear-gradient(135deg, #FFCC00, #FF4D00, #FF2D00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -92,12 +101,13 @@ h1,h2,h3,h4{font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:-0.04
   transform:translate(-50%,-50%);transition:width 0.5s,height 0.5s;
 }
 .btn:hover::before{width:300px;height:300px}
-.btn-lime{
-  background:linear-gradient(135deg,#BCFF47,#8EE800);color:#030308;
-  box-shadow:0 0 30px rgba(188,255,71,0.3),0 4px 20px rgba(0,0,0,0.5);
+.btn-fire{
+  background:linear-gradient(135deg,#FFCC00,#FF4D00,#FF2D00);color:#030308;
+  box-shadow:0 0 30px rgba(255,77,0,0.35),0 4px 20px rgba(0,0,0,0.5);
 }
-.btn-lime:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 0 50px rgba(188,255,71,0.5),0 12px 40px rgba(0,0,0,0.6)}
-.btn-lime:disabled{opacity:0.3;cursor:not-allowed;transform:none!important}
+.btn-fire:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 0 50px rgba(255,77,0,0.6),0 12px 40px rgba(0,0,0,0.6)}
+.btn-fire:disabled{opacity:0.3;cursor:not-allowed;transform:none!important}
+
 .btn-ghost{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);backdrop-filter:blur(8px)}
 .btn-ghost:hover{border-color:rgba(255,255,255,0.16);color:var(--text);background:rgba(255,255,255,0.07)}
 

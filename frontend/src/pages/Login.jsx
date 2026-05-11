@@ -79,7 +79,7 @@ export default function Login() {
           <h1 style={{fontSize:'clamp(2.5rem,6vw,3.8rem)',lineHeight:1.05,marginBottom:'0.6rem',fontWeight:900}}>
             <TypeWriter text="Track Every" speed={50}/>
             <br/>
-            <span className="holo-text">Goal.</span>
+            <span className="lava-text fire-glow">Goal.</span>
           </h1>
           <p style={{color:'var(--muted)',fontSize:'0.95rem',lineHeight:1.8,maxWidth:340,margin:'0 auto'}}>
             Your AI-powered command center for conquering habits, building momentum, and becoming unstoppable.
@@ -88,19 +88,19 @@ export default function Login() {
 
         {/* Card with gradient animated border */}
         <motion.div initial={{opacity:0,y:30,scale:0.95}} animate={{opacity:1,y:0,scale:1}} transition={{delay:0.5,duration:0.7,ease:[0.16,1,0.3,1]}}>
-          <div className="gradient-border">
+          <div className="gradient-border" style={{ background:'linear-gradient(135deg,var(--fire),var(--amber),var(--lava))' }}>
             <div ref={cardRef} className="glass" onMouseMove={handleTilt} onMouseLeave={resetTilt}
               style={{padding:'2.8rem',transition:'transform 0.12s ease-out',willChange:'transform'}}>
               <AnimatePresence mode="wait">
                 {!sent?(
                   <motion.div key="form" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0,x:-30}}>
                     <div style={{textAlign:'center',marginBottom:'1.8rem'}}>
-                      <p className="label">✉️ &nbsp;No password needed — magic link login</p>
+                      <p className="label amber-glow">✉️ &nbsp;No password needed — magic link login</p>
                     </div>
                     <form onSubmit={handleLogin} style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
                       <input type="email" className="input" placeholder="you@example.com" value={email}
-                        onChange={e=>setEmail(e.target.value)} required style={{textAlign:'center',fontSize:'1.05rem'}}/>
-                      <MagneticButton type="submit" className="btn btn-lime" disabled={loading}
+                        onChange={e=>setEmail(e.target.value)} required style={{textAlign:'center',fontSize:'1.05rem',borderColor:'var(--fire)'}}/>
+                      <MagneticButton type="submit" className="btn btn-fire" disabled={loading}
                         style={{width:'100%',padding:'1.1rem',fontSize:'0.95rem'}}>
                         <span style={{position:'absolute',top:0,left:'-100%',width:'50%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)',animation:'shine 2.5s ease-in-out infinite'}}/>
                         {loading?'⏳ Sending...':'⚡ Send Magic Link'}
@@ -113,7 +113,7 @@ export default function Login() {
                 ):(
                   <motion.div key="sent" initial={{opacity:0,scale:0.85}} animate={{opacity:1,scale:1}} style={{textAlign:'center',padding:'1.5rem 0'}}>
                     <motion.div animate={{y:[0,-12,0],rotate:[0,8,-8,0]}} transition={{duration:0.8}} style={{fontSize:'4.5rem',marginBottom:'1.2rem',display:'inline-block'}}>📬</motion.div>
-                    <h3 style={{marginBottom:'0.6rem',fontSize:'1.5rem'}} className="holo-text">Link Sent!</h3>
+                    <h3 style={{marginBottom:'0.6rem',fontSize:'1.5rem'}} className="lava-text fire-glow">Link Sent!</h3>
                     <p style={{color:'var(--muted)',fontSize:'0.92rem',lineHeight:1.8}}>Check your inbox at<br/><strong style={{color:'var(--text)',fontSize:'1rem'}}>{email}</strong></p>
                     <button className="btn btn-ghost" onClick={()=>setSent(false)} style={{marginTop:'1.8rem'}}>← Different email</button>
                   </motion.div>
