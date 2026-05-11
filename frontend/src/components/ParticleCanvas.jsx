@@ -89,11 +89,39 @@ export default function ParticleCanvas() {
         ctx.stroke();
         ctx.restore();
       }
+    class Ember {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * W;
+        this.y = -20;
+        this.speed = Math.random() * 1.5 + 1;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.alpha = Math.random() * 0.5 + 0.3;
+        this.color = ['#FF4D00', '#FFCC00', '#FF8E00'][Math.floor(Math.random() * 3)];
+      }
+      update() {
+        this.y += this.speed;
+        this.x += this.vx;
+        if (this.y > H) this.reset();
+      }
+      draw() {
+        if (!isFinite(this.x) || !isFinite(this.y)) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color + Math.floor(this.alpha * 255).toString(16).padStart(2, '0');
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+      }
     }
 
     resize();
     const comets = [];
     for (let i = 0; i < 5; i++) comets.push(new Comet());
+
+    const embers = [];
+    for (let i = 0; i < 40; i++) embers.push(new Ember());
 
     for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
@@ -119,6 +147,7 @@ export default function ParticleCanvas() {
     function loop() {
       ctx.clearRect(0, 0, W, H);
       particles.forEach(p => { p.update(); p.draw(); });
+      embers.forEach(e => { e.update(); e.draw(); });
       comets.forEach(c => { c.update(); c.draw(); });
       drawLines();
       animId = requestAnimationFrame(loop);

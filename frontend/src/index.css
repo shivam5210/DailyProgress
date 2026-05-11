@@ -4,7 +4,7 @@
   --bg:#030308; --bg1:#080812;
   --lime:#BCFF47; --teal:#00E5CC; --violet:#9B7FFF; --orange:#FF6B2B; --green:#3DFF8F; --red:#FF4757; --pink:#FF6BBA; --blue:#5B8DEF;
   --text:#F2F2F2; --muted:rgba(242,242,242,0.35); --border:rgba(255,255,255,0.06);
-  --card:rgba(255,255,255,0.022); --card-h:rgba(255,255,255,0.05);
+  --card:rgba(255,255,255,0.012); --card-h:rgba(255,255,255,0.035);
   --shadow:0 12px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
