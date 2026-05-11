@@ -76,12 +76,12 @@ export default function Login() {
             <div style={{position:'absolute',inset:-6,borderRadius:28,border:'1px solid rgba(0,229,204,0.15)',animationDelay:'0.8s'}} className="pulse-ring"/>
             <div style={{position:'absolute',inset:-6,borderRadius:28,border:'1px solid rgba(155,127,255,0.12)',animationDelay:'1.6s'}} className="pulse-ring"/>
           </div>
-          <h1 style={{fontSize:'clamp(2.5rem,6vw,3.8rem)',lineHeight:1.05,marginBottom:'0.6rem',fontWeight:900}}>
+          <h1 className="black-text" style={{fontSize:'clamp(2.5rem,6vw,3.8rem)',lineHeight:1.05,marginBottom:'0.6rem'}}>
             <TypeWriter text="Track Every" speed={50}/>
             <br/>
-            <span className="lava-text fire-glow">Goal.</span>
+            Goal.
           </h1>
-          <p style={{color:'var(--muted)',fontSize:'0.95rem',lineHeight:1.8,maxWidth:340,margin:'0 auto'}}>
+          <p className="black-text" style={{fontSize:'0.95rem',lineHeight:1.8,maxWidth:340,margin:'0 auto',textShadow:'0 0 10px rgba(255,255,255,0.5)'}}>
             Your AI-powered command center for conquering habits, building momentum, and becoming unstoppable.
           </p>
         </motion.div>
@@ -95,7 +95,7 @@ export default function Login() {
                 {!sent?(
                   <motion.div key="form" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0,x:-30}}>
                     <div style={{textAlign:'center',marginBottom:'1.8rem'}}>
-                      <p className="label amber-glow">✉️ &nbsp;No password needed — magic link login</p>
+                      <p className="label black-text" style={{textShadow:'0 0 10px white'}}>✉️ &nbsp;No password needed — magic link login</p>
                     </div>
                     <form onSubmit={handleLogin} style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
                       <input type="email" className="input" placeholder="you@example.com" value={email}
@@ -113,8 +113,8 @@ export default function Login() {
                 ):(
                   <motion.div key="sent" initial={{opacity:0,scale:0.85}} animate={{opacity:1,scale:1}} style={{textAlign:'center',padding:'1.5rem 0'}}>
                     <motion.div animate={{y:[0,-12,0],rotate:[0,8,-8,0]}} transition={{duration:0.8}} style={{fontSize:'4.5rem',marginBottom:'1.2rem',display:'inline-block'}}>📬</motion.div>
-                    <h3 style={{marginBottom:'0.6rem',fontSize:'1.5rem'}} className="lava-text fire-glow">Link Sent!</h3>
-                    <p style={{color:'var(--muted)',fontSize:'0.92rem',lineHeight:1.8}}>Check your inbox at<br/><strong style={{color:'var(--text)',fontSize:'1rem'}}>{email}</strong></p>
+                    <h3 style={{marginBottom:'0.6rem',fontSize:'1.5rem'}} className="black-text">Link Sent!</h3>
+                    <p className="black-text" style={{fontSize:'0.92rem',lineHeight:1.8,textShadow:'0 0 8px white'}}>Check your inbox at<br/><strong style={{color:'black',fontSize:'1rem'}}>{email}</strong></p>
                     <button className="btn btn-ghost" onClick={()=>setSent(false)} style={{marginTop:'1.8rem'}}>← Different email</button>
                   </motion.div>
                 )}
@@ -129,14 +129,14 @@ export default function Login() {
           {FEATURES.map((f,i)=>(
             <motion.span key={i} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:0.9+i*0.06}}
               whileHover={{scale:1.1,y:-3,borderColor:'rgba(188,255,71,0.3)'}}
-              style={{fontSize:'0.72rem',color:'var(--muted)',background:'rgba(255,255,255,0.03)',
-                border:'1px solid var(--border)',padding:'0.3rem 0.8rem',borderRadius:999,cursor:'default',transition:'all 0.2s'}}>{f}</motion.span>
+              style={{fontSize:'0.72rem',color:'black',background:'rgba(255,255,255,0.03)',
+                border:'1px solid var(--border)',padding:'0.3rem 0.8rem',borderRadius:999,cursor:'default',transition:'all 0.2s',textShadow:'0 0 5px white'}}>{f}</motion.span>
           ))}
         </motion.div>
 
         {/* Bottom brand line */}
         <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.2}}
-          style={{textAlign:'center',marginTop:'2.5rem',fontSize:'0.7rem',letterSpacing:'0.2em',color:'rgba(255,255,255,0.12)',textTransform:'uppercase',fontFamily:'DM Mono'}}>
+          style={{textAlign:'center',marginTop:'2.5rem',fontSize:'0.7rem',letterSpacing:'0.2em',color:'black',textTransform:'uppercase',fontFamily:'DM Mono',textShadow:'0 0 5px white'}}>
           Built with ❤️ for founders
         </motion.p>
       </motion.div>

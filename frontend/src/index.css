@@ -16,6 +16,11 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.black-text { 
+  color: #000000; 
+  text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4); 
+  font-weight: 900;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
