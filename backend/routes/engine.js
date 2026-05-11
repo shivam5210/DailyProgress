@@ -4,8 +4,8 @@ import { Resend } from 'resend';
 import { supabase } from '../db/supabase.js';
 
 const router = express.Router();
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const resend = new Resend(process.env.RESEND_API_KEY);
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || 'sk-ant-dummy12345' });
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy12345');
 
 router.post('/analyze', async (req, res) => {
   const userId = req.user.sub;
