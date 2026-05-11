@@ -90,16 +90,65 @@ export default function ParticleCanvas() {
         ctx.restore();
       }
     }
+    class Smoke {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.vx = (Math.random() - 0.5) * 0.2;
+        this.vy = -Math.random() * 0.3 - 0.1;
+        this.size = Math.random() * 150 + 100;
+        this.alpha = 0;
+        this.maxAlpha = Math.random() * 0.04 + 0.01;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.alpha < this.maxAlpha) this.alpha += 0.001;
+        if (this.y < -this.size) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+        grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+    }
+
+    class CursorParticle {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2 - 1;
+        this.size = Math.random() * 3 + 1;
+        this.life = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        this.life -= this.decay;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,123,0,${this.life * 0.8})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#FF3D00';
+        ctx.fill();
+      }
+    }
+
     class Ember {
       constructor() { this.reset(); }
       reset() {
         this.x = Math.random() * W;
-        this.y = -20;
-        this.speed = Math.random() * 1.5 + 1;
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.size = Math.random() * 1.5 + 0.5;
-        this.alpha = Math.random() * 0.5 + 0.3;
-        this.color = ['#FF4D00', '#FFCC00', '#FF8E00'][Math.floor(Math.random() * 3)];
+        this.y = -50;
+        this.speed = Math.random() * 2 + 1.5;
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.size = Math.random() * 2 + 0.5;
+        this.alpha = Math.random() * 0.7 + 0.3;
+        this.color = ['#FF3D00', '#FFB347', '#FF5722'][Math.floor(Math.random() * 3)];
       }
       update() {
         this.y += this.speed;
@@ -111,18 +160,28 @@ export default function ParticleCanvas() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color + Math.floor(this.alpha * 255).toString(16).padStart(2, '0');
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 12;
         ctx.shadowColor = this.color;
         ctx.fill();
       }
     }
 
+    const mouse = { x: -100, y: -100 };
+    const cursorParticles = [];
+    const smokes = [];
+    for(let i=0; i<15; i++) smokes.push(new Smoke());
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+      if (Math.random() > 0.6) cursorParticles.push(new CursorParticle(mouse.x, mouse.y));
+    });
+
     resize();
     const comets = [];
-    for (let i = 0; i < 5; i++) comets.push(new Comet());
+    for (let i = 0; i < 6; i++) comets.push(new Comet());
 
     const embers = [];
-    for (let i = 0; i < 40; i++) embers.push(new Ember());
+    for (let i = 0; i < 80; i++) embers.push(new Ember());
 
     for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
@@ -147,9 +206,17 @@ export default function ParticleCanvas() {
 
     function loop() {
       ctx.clearRect(0, 0, W, H);
+      smokes.forEach(s => { s.update(); s.draw(); });
       particles.forEach(p => { p.update(); p.draw(); });
       embers.forEach(e => { e.update(); e.draw(); });
       comets.forEach(c => { c.update(); c.draw(); });
+      
+      for(let i=cursorParticles.length-1; i>=0; i--) {
+        cursorParticles[i].update();
+        cursorParticles[i].draw();
+        if(cursorParticles[i].life <= 0) cursorParticles.splice(i, 1);
+      }
+      
       drawLines();
       animId = requestAnimationFrame(loop);
     }

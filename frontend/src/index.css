@@ -3,28 +3,47 @@
 :root {
   --bg:#030308; --bg1:#080812;
   --lime:#BCFF47; --teal:#00E5CC; --violet:#9B7FFF; --orange:#FF6B2B; --green:#3DFF8F; --red:#FF4757; --pink:#FF6BBA; --blue:#5B8DEF;
-  --fire:#FF4D00; --amber:#FFCC00; --lava:#FF2D00;
-  --text:#F2F2F2; --muted:rgba(242,242,242,0.45); --border:rgba(255,255,255,0.08);
-  --card:rgba(255,255,255,0.012); --card-h:rgba(255,255,255,0.035);
-  --shadow:0 12px 60px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.05);
+  --fire:#FF3D00; --amber:#FFB347; --lava:#FF2D00;
+  --text:#FFFFFF; --muted:rgba(255,255,255,0.5); --border:rgba(255,255,255,0.1);
+  --card:rgba(255,255,255,0.015); --card-h:rgba(255,255,255,0.04);
+  --shadow:0 20px 80px rgba(0,0,0,0.9),0 0 0 1px rgba(255,255,255,0.06);
 }
-.fire-glow { text-shadow: 0 0 20px var(--fire), 0 0 40px var(--lava); }
-.amber-glow { text-shadow: 0 0 15px var(--amber); }
+
+.white-neon {
+  color: #FFFFFF;
+  text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4), 0 0 40px rgba(255,120,0,0.3);
+  animation: flicker 4s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.8; }
+}
+
 .lava-text {
-  background: linear-gradient(135deg, #FFCC00, #FF4D00, #FF2D00);
+  background: linear-gradient(135deg, #FFB347, #FF3D00, #FF2D00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(255,61,0,0.5));
 }
-.black-text { 
-  color: #000000; 
-  text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4); 
-  font-weight: 900;
+
+.hud-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--fire);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.heat-distort {
+  filter: url(#heat);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3,h4{font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:-0.04em}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.04em}
 #root{position:relative;z-index:1}
 
 /* ═══ ANIMATED GRADIENT MESH BG ═══ */
