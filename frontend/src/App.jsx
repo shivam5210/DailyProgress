@@ -6,36 +6,30 @@ import Dashboard from './pages/Dashboard';
 import './index.css';
 
 function App() {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(undefined); // undefined = loading
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setLoading(false);
-    }).catch(err => {
-      console.error("Supabase getSession error:", err);
-      setLoading(false);
-    });
+    }).catch(() => setSession(null));
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  if (loading) {
-    return <div className="loading-screen">INITIALIZING //</div>;
+  if (session === undefined) {
+    return <div className="loading-screen">INITIALIZING<span className="loading-dots" /></div>;
   }
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!session ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={session ? <Dashboard session={session} /> : <Navigate to="/" />} />
+        <Route path="/" element={!session ? <Login /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={session ? <Dashboard session={session} /> : <Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
