@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import './index.css';
 
+import BurningLeaf from './components/BurningLeaf';
+
 function App() {
   const [session, setSession] = useState(undefined); // undefined = loading
 
@@ -26,6 +28,8 @@ function App() {
 
   return (
     <Router>
+      <BurningLeaf side="left" />
+      <BurningLeaf side="right" />
       <Routes>
         <Route path="/" element={!session ? <Login /> : <Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={session ? <Dashboard session={session} /> : <Navigate to="/" replace />} />

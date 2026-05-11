@@ -85,9 +85,6 @@ export default function Dashboard({session}){
     <div style={{minHeight:'100vh',position:'relative'}}>
       <div className="mesh-bg"><div className="mesh-blob"/><div className="mesh-blob"/><div className="mesh-blob"/><div className="mesh-blob"/></div>
       <div className="grid-overlay"/><ParticleCanvas/>
-      
-      <BurningLeaf side="left" />
-      <BurningLeaf side="right" />
 
       {/* Toast */}
       <AnimatePresence>{toast&&(

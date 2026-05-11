@@ -8,10 +8,10 @@ export default function BurningLeaf({ side = 'left' }) {
       transition={{ duration: 1.5, ease: 'easeOut' }}
       style={{
         position: 'fixed',
-        bottom: '5vh',
-        [side]: '2vw',
-        zIndex: 5,
-        width: '200px',
+        bottom: '20px',
+        [side]: '20px',
+        zIndex: 100,
+        width: '180px',
         pointerEvents: 'none',
         display: 'flex',
         flexDirection: 'column',
