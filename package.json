@@ -1,0 +1,25 @@
+{
+  "name": "dailyprogress",
+  "version": "1.0.0",
+  "description": "A personal life tracker for founders. Define your problems, check in daily, and let AI calculate your real success percentage. Hit 100% → get a celebration email.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"magenta,cyan\" \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivam5210/DailyProgress.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shivam5210/DailyProgress/issues"
+  },
+  "homepage": "https://github.com/shivam5210/DailyProgress#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
