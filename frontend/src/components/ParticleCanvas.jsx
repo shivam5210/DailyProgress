@@ -37,6 +37,7 @@ export default function ParticleCanvas() {
         if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
       }
       draw() {
+        if (!isFinite(this.x) || !isFinite(this.y)) return;
         const a = this.alpha * (0.6 + 0.4 * Math.sin(this.pulse));
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r * (0.8 + 0.2 * Math.sin(this.pulse)), 0, Math.PI * 2);
@@ -72,6 +73,7 @@ export default function ParticleCanvas() {
         if (this.x > W + 200 || this.y > H + 200) this.reset();
       }
       draw() {
+        if (!isFinite(this.x) || !isFinite(this.y) || !isFinite(this.vx) || !isFinite(this.vy)) return;
         ctx.save();
         const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.vx * 12, this.y - this.vy * 12);
         grad.addColorStop(0, this.color);
@@ -89,10 +91,10 @@ export default function ParticleCanvas() {
       }
     }
 
+    resize();
     const comets = [];
     for (let i = 0; i < 5; i++) comets.push(new Comet());
 
-    resize();
     for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
     function drawLines() {
