@@ -107,6 +107,7 @@ export default function ParticleCanvas() {
         if (this.y < -this.size) this.reset();
       }
       draw() {
+        if (!isFinite(this.x) || !isFinite(this.y) || !isFinite(this.size)) return;
         ctx.beginPath();
         const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
         grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
@@ -130,6 +131,7 @@ export default function ParticleCanvas() {
         this.life -= this.decay;
       }
       draw() {
+        if (!isFinite(this.x) || !isFinite(this.y) || !isFinite(this.life)) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,123,0,${this.life * 0.8})`;
@@ -166,6 +168,7 @@ export default function ParticleCanvas() {
       }
     }
 
+    resize();
     const mouse = { x: -100, y: -100 };
     const cursorParticles = [];
     const smokes = [];
@@ -175,8 +178,6 @@ export default function ParticleCanvas() {
       mouse.x = e.clientX; mouse.y = e.clientY;
       if (Math.random() > 0.6) cursorParticles.push(new CursorParticle(mouse.x, mouse.y));
     });
-
-    resize();
     const comets = [];
     for (let i = 0; i < 6; i++) comets.push(new Comet());
 
