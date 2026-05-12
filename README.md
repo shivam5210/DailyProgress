@@ -20,6 +20,25 @@ A personal life tracker for founders. Define your problems, check in daily, and 
 
 ---
 
+## ⚡ Windows Quick Start (One Command)
+
+Copy and paste this into PowerShell (as administrator recommended):
+
+```powershell
+git clone https://github.com/shivam5210/DailyProgress.git; cd DailyProgress; Copy-Item backend\.env.example backend\.env; Copy-Item frontend\.env.example frontend\.env; Write-Host "✅ Config files created. Now add your API keys to backend\.env and frontend\.env"; Write-Host "After adding keys, run in Terminal 1: cd backend && npm install && npm run dev"; Write-Host "And in Terminal 2: cd frontend && npm install && npm run dev"
+```
+
+**What this does:**
+1. ✅ Clones the repository
+2. ✅ Creates `.env` files for backend & frontend
+3. ✅ Shows next steps
+
+**Then:**
+- Edit `backend/.env` and `frontend/.env` with your API keys
+- Open **2 PowerShell windows** and run the commands shown
+
+---
+
 ## 🚀 Quick Start Guide
 
 ### Prerequisites
