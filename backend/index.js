@@ -30,14 +30,12 @@ app.use((req, res, next) => {
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    timestamp: new Date().toISOString()
   });
 });
 
-app.post('/api/auth/sync', authRoutes);
-
-// ====== PROTECTED ROUTES (with JWT verification) ======
+// ====== API ROUTES ======
+app.use('/api/auth', authRoutes);
 app.use('/api/goals', verifyToken, goalRoutes);
 app.use('/api/checkins', verifyToken, checkinRoutes);
 app.use('/api/engine', verifyToken, engineRoutes);
