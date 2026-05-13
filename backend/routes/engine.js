@@ -1,17 +1,12 @@
 import express from 'express';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Resend } from 'resend';
 import { supabase } from '../db/supabase.js';
 
 const router = express.Router();
 
-const anthropic = new Anthropic({ 
-  apiKey: process.env.ANTHROPIC_API_KEY 
-});
-
-const resend = new Resend(
-  process.env.RESEND_API_KEY
-);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ====== AI ANALYSIS ENDPOINT ======
 router.post('/analyze', async (req, res, next) => {
@@ -84,26 +79,22 @@ RETURN ONLY valid JSON (no markdown):
     // 4. Call AI
     let aiResponse = null;
 
-    if (process.env.ANTHROPIC_API_KEY) {
+    if (process.env.GEMINI_API_KEY) {
       try {
-        const msg = await anthropic.messages.create({
-          model: "claude-3-5-sonnet-20241022",
-          max_tokens: 1500,
-          messages: [{ role: "user", content: prompt }]
-        });
-
-        const responseText = msg.content[0].type === 'text' ? msg.content[0].text : '';
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
         
         // Extract JSON from response
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
         if (!jsonMatch) {
           throw new Error('AI response did not contain valid JSON');
         }
         
         aiResponse = JSON.parse(jsonMatch[0]);
       } catch (aiError) {
-        console.error('AI API error:', aiError.message);
-        // Fallback to mocked response
+        console.error('Gemini API error:', aiError.message);
         aiResponse = null;
       }
     }
