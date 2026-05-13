@@ -22,8 +22,8 @@ router.post('/analyze', async (req, res) => {
 
     // 2. Fetch last 7 days checkins
     const { data: checkins, error: checkinError } = await supabase
-      .from('daily_checkins')
-      .select(`date, goal_logs(goal_id, value)`)
+      .from('checkins')
+      .select('date, logs')
       .eq('user_id', userId)
       .order('date', { ascending: false })
       .limit(7);

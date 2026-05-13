@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
     if (error) throw error;
     res.json(data[0]);
   } catch (error) {
+    console.error("Goal creation error:", error);
     res.status(500).json({ error: error.message });
   }
 });

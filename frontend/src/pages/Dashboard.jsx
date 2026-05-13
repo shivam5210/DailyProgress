@@ -49,6 +49,16 @@ export default function Dashboard({session}){
 
   async function loadAll(){
     setLoadingGoals(true);
+    
+    // 1. Sync user to ensure backend Postgres has the user record
+    await api.post('/auth/sync', { 
+      id: user.id, 
+      email: user.email, 
+      full_name: user.user_metadata?.full_name, 
+      avatar_url: user.user_metadata?.avatar_url 
+    }).catch(err => console.error("Sync error", err));
+
+    // 2. Fetch data
     const [gr,cr]=await Promise.all([api.get('/goals').catch(()=>({data:[]})),api.get('/checkins').catch(()=>({data:[]}))]);
     setGoals(gr.data||[]);setCheckins(cr.data||[]);
     if(!(gr.data||[]).length)setShowOnboard(true);
@@ -57,9 +67,21 @@ export default function Dashboard({session}){
 
   async function handleOnboard(e){
     e.preventDefault();setOnboardLoading(true);
-    for(const line of problemsText.split('\n').map(l=>l.trim()).filter(Boolean))
-      await api.post('/goals',{title:line,description:'',goal_type:'reduce'}).catch(()=>{});
-    showT('Goals locked in! Let\'s go 🚀','lime');setShowOnboard(false);await loadAll();setOnboardLoading(false);
+    let success = true;
+    for(const line of problemsText.split('\n').map(l=>l.trim()).filter(Boolean)) {
+      try {
+        await api.post('/goals',{title:line,description:'',goal_type:'reduce'});
+      } catch (err) {
+        console.error("Failed to add goal", err);
+        success = false;
+      }
+    }
+    if (success) {
+      showT('Goals locked in! Let\'s go 🚀','lime');
+    } else {
+      showT('Failed to save goals! Check backend connection.','red');
+    }
+    setShowOnboard(false);await loadAll();setOnboardLoading(false);
   }
 
   async function handleCheckin(){

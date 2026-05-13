@@ -15,6 +15,7 @@ router.post('/sync', async (req, res) => {
     if (error) throw error;
     res.json({ user: data });
   } catch (error) {
+    console.error("Auth sync error:", error);
     res.status(500).json({ error: error.message });
   }
 });
