@@ -3,11 +3,8 @@ import { supabase } from '../db/supabase.js';
 
 const router = express.Router();
 
-// Post today's checkin
-router.post('/', async (req, res) => {
-  const userId = req.user.sub;
-  const { date, mood, journal_note, logs } = req.body; // logs = [{ goal_id, value }]
-
+// ====== POST TODAY'S CHECK-IN ======
+router.post('/', async (req, res, next) => {
   try {
     // 1. Create or Update Checkin using the simplified schema
     const { data: checkin, error: checkinError } = await supabase
@@ -22,7 +19,9 @@ router.post('/', async (req, res) => {
       .select()
       .single();
 
-    if (checkinError) throw checkinError;
+    if (checkinError) {
+      throw new Error(`Failed to create checkin: ${checkinError.message}`);
+    }
 
     res.json({ message: 'Checkin saved successfully', checkin });
   } catch (error) {
@@ -31,22 +30,74 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get historical checkins
-router.get('/', async (req, res) => {
-  const userId = req.user.sub;
+// ====== GET HISTORICAL CHECK-INS ======
+router.get('/', async (req, res, next) => {
   try {
     const { data, error } = await supabase
       .from('checkins')
       .select('*')
       .eq('user_id', userId)
       .order('date', { ascending: false })
-      .limit(30);
+      .range(offsetNum, offsetNum + limitNum - 1);
 
-    if (error) throw error;
-    res.json(data);
+    if (error) {
+      throw new Error(`Failed to fetch checkins: ${error.message}`);
+    }
+
+    res.json({
+      success: true,
+      data: data || [],
+      pagination: {
+        limit: limitNum,
+        offset: offsetNum,
+        total: count || 0
+      }
+    });
   } catch (error) {
     console.error("Fetch checkins error:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ====== GET CHECK-IN BY DATE ======
+router.get('/:date', async (req, res, next) => {
+  try {
+    const userId = req.user?.sub;
+    const { date } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ 
+        error: 'User ID missing from token',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const { data, error } = await supabase
+      .from('daily_checkins')
+      .select('*, goal_logs(*)')
+      .eq('user_id', userId)
+      .eq('date', date)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      throw new Error(`Failed to fetch checkin: ${error.message}`);
+    }
+
+    if (!data) {
+      return res.status(404).json({ 
+        error: 'Check-in not found for this date',
+        code: 'NOT_FOUND',
+        date
+      });
+    }
+
+    res.json({
+      success: true,
+      data
+    });
+  } catch (error) {
+    console.error('GET /checkins/:date error:', error);
+    next(error);
   }
 });
 

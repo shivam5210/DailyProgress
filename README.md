@@ -1,18 +1,18 @@
-# 🎯 AI Goal Tracker
+# 🎯 DailyProgress - AI Goal Tracker
 
 A personal life tracker for founders. Define your problems, check in daily, and let AI calculate your real success percentage. Hit 100% → get a celebration email.
 
 ## ✨ Features
 
-- Email magic link login (no passwords)
-- Dynamic goal setup — type your own problems
-- Daily check-in with mood tracker & journal
-- AI-powered progress analysis (Claude API)
-- Animated SVG progress rings
-- Auto congratulation email at 100% completion
-- Antigravity dark glassmorphism UI
+- 🔐 Email magic link login (no passwords)
+- 🎯 Dynamic goal setup — type your own problems
+- 📝 Daily check-in with mood tracker & journal
+- 🤖 AI-powered progress analysis (Claude API)
+- ✨ Animated SVG progress rings
+- 🎉 Auto congratulation email at 100% completion
+- 🌙 Antigravity dark glassmorphism UI
 
-## 🧰 Stack
+## 🧰 Tech Stack
 
 `React 19` · `Vite` · `Express` · `Supabase` · `Anthropic Claude` · `Resend` · `Framer Motion`
 
@@ -73,10 +73,61 @@ Here are the APIs connecting them:
 
 ## 🌐 Deployment
 
+When ready to deploy:
+
 - **Frontend** → [Vercel](https://vercel.com) (root: `frontend`)
 - **Backend** → [Railway](https://railway.app) (root: `backend`)
-- **Database** → [Supabase](https://supabase.com) (run schema from `/backend/db/supabase.js`)
+- **Database** → [Supabase](https://supabase.com)
 
-## 📄 License
+---
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+```bash
+# Kill process on port 4000 (backend)
+# Terminal/Mac/Linux:
+lsof -i :4000 | grep LISTEN | awk '{print $2}' | xargs kill -9
+
+# PowerShell/Windows:
+netstat -ano | findstr :4000
+taskkill /PID <PID> /F
+
+# Same for port 5173 (frontend)
+```
+
+### Dependencies Not Installing
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Environment Variables Not Loading
+- Ensure `.env` files are in correct directories
+- Restart dev servers after changing `.env`
+- Check for typos in variable names
+
+### CORS Issues
+- Verify backend is running on port 4000
+- Check frontend `.env` has correct API URL
+- Ensure backend has CORS configured
+
+---
+
+## 📝 License
 
 MIT
+
+---
+
+## 🤝 Contributing
+
+Found a bug or have a feature request? Open an [issue](https://github.com/shivam5210/DailyProgress/issues) or submit a pull request!
+
+---
+
+**Happy coding! 🚀**
