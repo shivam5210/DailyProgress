@@ -94,9 +94,17 @@ export default function Dashboard({session}){
   async function handleOnboard(e){
     e.preventDefault();setOnboardLoading(true);
     let success = true;
-    for(const line of problemsText.split('\n').map(l=>l.trim()).filter(Boolean)) {
+    const lines = problemsText.split('\n').map(l=>l.trim()).filter(Boolean);
+    
+    for(const line of lines) {
       try {
-        await api.post('/goals',{title:line,description:'',goal_type:'reduce'});
+        // Handle both raw lines and "Title | Description" format from AI
+        const [title, desc] = line.split('|').map(s => s.trim());
+        await api.post('/goals',{
+          title: title,
+          description: desc || '',
+          goal_type: 'build'
+        });
       } catch (err) {
         console.error("Failed to add goal", err);
         success = false;
@@ -133,6 +141,37 @@ export default function Dashboard({session}){
       showT('Error saving check-in','red');
     } finally{
       setSaving(false);
+    }
+  }
+
+  async function resetGoals() {
+    if (!window.confirm("Are you sure you want to reset all goals? This will clear your progress.")) return;
+    try {
+      await api.delete('/goals');
+      showT('Goals reset successfully', 'lime');
+      await loadAll();
+      setShowOnboard(true);
+    } catch (err) {
+      setError(err.message);
+      showT('Failed to reset goals', 'red');
+    }
+  }
+
+  async function optimizeProblems() {
+    if (!problemsText.trim()) return showT('Write some problems first', 'red');
+    setOnboardLoading(true);
+    try {
+      const { data } = await api.post('/engine/optimize-goals', { problems: problemsText });
+      if (data.success && data.goals) {
+        const optimizedText = data.goals.map(g => `${g.title} | ${g.description}`).join('\n');
+        setProblemsText(optimizedText);
+        showT('AI has optimized your goals! ⚡', 'lime');
+      }
+    } catch (err) {
+      setError(err.message);
+      showT('AI Optimization failed', 'red');
+    } finally {
+      setOnboardLoading(false);
     }
   }
 
@@ -227,6 +266,8 @@ export default function Dashboard({session}){
             <div style={{display:'flex',flexDirection:'column',gap:'0.5rem'}}>
               <button className="btn btn-lime" onClick={handleRunAI} disabled={aiLoading} style={{padding:'0.65rem 1.2rem',fontSize:'0.76rem'}}>
                 {aiLoading?'⏳':'⚡'} AI Analysis</button>
+              <button className="btn" onClick={resetGoals} style={{padding:'0.5rem 1.2rem',fontSize:'0.7rem',background:'rgba(255,255,255,0.05)',color:'var(--muted)'}}>
+                ↺ Reset All</button>
             </div>
           </div>
         </motion.header>
@@ -268,6 +309,28 @@ export default function Dashboard({session}){
 
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.25}}>
+            {activeTab==='ai'&&(
+              <div style={{display:'flex',flexDirection:'column',gap:'1.5rem'}}>
+                <div className="gradient-border">
+                  <div className="glass" style={{padding:'2.5rem'}}>
+                    <h2 style={{fontSize:'1.3rem',marginBottom:'1.5rem',color:'var(--lime)'}}>⚡ Deep AI Analysis</h2>
+                    {aiLoading ? (
+                      <div className="sk" style={{height:200}}/>
+                    ) : aiResult ? (
+                      <div style={{color:'var(--text)',lineHeight:1.8,fontSize:'0.95rem'}}>
+                        <div style={{whiteSpace:'pre-wrap',fontFamily:'Inter, sans-serif'}}>
+                          {aiResult.deepAnalysis}
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{textAlign:'center',padding:'2rem',color:'var(--muted)'}}>
+                        <p>No analysis yet. Click the "AI Analysis" button above to generate your report.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             {activeTab==='today'&&(
               <div className="gradient-border">
                 <div className="glass" style={{padding:'2.5rem'}}>
@@ -336,9 +399,14 @@ export default function Dashboard({session}){
                 <form onSubmit={handleOnboard} style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
                   <textarea className="input" rows={7} required value={problemsText} onChange={e=>setProblemsText(e.target.value)}
                     placeholder={"Quit smoking (20/day)\nQuit weed\nBuild startup contacts\nShip daily\nGym 5x/week"}/>
-                  <button type="submit" className="btn btn-lime" disabled={onboardLoading} style={{padding:'1.1rem',fontSize:'0.95rem'}}>
-                    {onboardLoading?'⏳ Setting up...':'🚀 Start Tracking'}
-                  </button>
+                  <div style={{display:'flex',gap:'1rem'}}>
+                    <button type="button" className="btn" onClick={optimizeProblems} disabled={onboardLoading} style={{flex:1,background:'rgba(188,255,71,0.1)',color:'var(--lime)',border:'1px solid rgba(188,255,71,0.2)'}}>
+                      ✨ Optimize with AI
+                    </button>
+                    <button type="submit" className="btn btn-lime" disabled={onboardLoading} style={{flex:1}}>
+                      {onboardLoading?'⏳':'🚀 Start Tracking'}
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

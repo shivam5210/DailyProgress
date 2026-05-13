@@ -215,4 +215,35 @@ router.delete('/:goalId', async (req, res, next) => {
   }
 });
 
+// ====== DELETE ALL GOALS (RESET) ======
+router.delete('/', async (req, res, next) => {
+  try {
+    const userId = req.user?.sub;
+
+    if (!userId) {
+      return res.status(400).json({ 
+        error: 'User ID missing from token',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const { error } = await supabase
+      .from('goals')
+      .delete()
+      .eq('user_id', userId);
+
+    if (error) {
+      throw new Error(`Failed to reset goals: ${error.message}`);
+    }
+
+    res.json({
+      success: true,
+      message: 'All goals have been reset'
+    });
+  } catch (error) {
+    console.error('DELETE /goals error:', error);
+    next(error);
+  }
+});
+
 export default router;

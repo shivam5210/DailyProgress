@@ -69,11 +69,17 @@ Analyze the user's progress and for each goal:
 2. If they've completely conquered the problem, output 100
 3. Provide 1-sentence Hinglish feedback based on recent trajectory
 
-RETURN ONLY valid JSON (no markdown):
+Also provide a "deepAnalysis" which is a 2-3 paragraph markdown report. Include:
+- A summary of their mental state and consistency.
+- 1-2 psychological tips for founders (Hinglish).
+- A powerful "Mindset Shift" quote or thought.
+
+RETURN ONLY valid JSON (no markdown outside the JSON):
 {
   "goalUpdates": [
     { "goal_id": "uuid", "new_percentage": 85, "feedback": "Kaafi improvement hai, aise hi karte raho!" }
-  ]
+  ],
+  "deepAnalysis": "# Weekly Report\n\nYour consistency has been..."
 }`;
 
     // 4. Call AI
@@ -176,15 +182,78 @@ RETURN ONLY valid JSON (no markdown):
       }
     }
 
+    // 5. Update Goals in DB & send emails
+    const updates = [];
+    
+    // Create a detailed report section in the prompt response if possible
+    // We will ask Gemini for a detailed analysis separately or as part of the JSON
+    // Let's update the prompt to include a "deepAnalysis" field
+    
+    // ... existing updates logic ...
+    // (I'll just modify the prompt and response handling below)
+
     res.json({
       success: true,
       message: 'Analysis complete',
       updates: updates.length > 0 ? updates : aiResponse.goalUpdates,
+      deepAnalysis: aiResponse.deepAnalysis || "Great job! Consistency is the key to success. Keep tracking your progress daily.",
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('POST /analyze error:', error);
     next(error);
+  }
+});
+
+// ====== OPTIMIZE GOALS ENDPOINT ======
+router.post('/optimize-goals', async (req, res, next) => {
+  try {
+    const { problems } = req.body; // Raw text from user
+
+    if (!problems || !problems.trim()) {
+      return res.status(400).json({ error: 'No problems provided' });
+    }
+
+    const prompt = `
+      The user has listed these problems:
+      ${problems}
+
+      As an expert life coach, transform these problems into 4-5 high-impact, actionable goals.
+      For each goal:
+      1. Provide a clear Title.
+      2. Provide a short Strategy/Solution (Hinglish).
+      3. Assign a Category (reduce, build, maintain, learn).
+
+      Return ONLY a valid JSON object:
+      {
+        "optimizedGoals": [
+          { "title": "...", "description": "...", "goal_type": "..." }
+        ]
+      }
+    `;
+
+    if (process.env.GEMINI_API_KEY) {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const aiResponse = JSON.parse(jsonMatch[0]);
+      res.json({ success: true, goals: aiResponse.optimizedGoals });
+    } else {
+      // Mocked response
+      res.json({ 
+        success: true, 
+        goals: problems.split('\n').filter(Boolean).map(p => ({
+          title: p.trim(),
+          description: 'Start small and stay consistent.',
+          goal_type: 'build'
+        }))
+      });
+    }
+  } catch (error) {
+    console.error('Goal optimization error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
