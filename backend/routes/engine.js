@@ -182,16 +182,6 @@ RETURN ONLY valid JSON (no markdown outside the JSON):
       }
     }
 
-    // 5. Update Goals in DB & send emails
-    const updates = [];
-    
-    // Create a detailed report section in the prompt response if possible
-    // We will ask Gemini for a detailed analysis separately or as part of the JSON
-    // Let's update the prompt to include a "deepAnalysis" field
-    
-    // ... existing updates logic ...
-    // (I'll just modify the prompt and response handling below)
-
     res.json({
       success: true,
       message: 'Analysis complete',
