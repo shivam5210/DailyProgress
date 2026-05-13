@@ -27,6 +27,15 @@ app.use((req, res, next) => {
 });
 
 // ====== PUBLIC ROUTES ======
+app.get('/', (req, res) => {
+  res.json({ 
+    message: '🚀 DailyProgress API is running!',
+    status: 'Healthy',
+    docs: '/health',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 

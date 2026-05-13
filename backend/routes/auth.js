@@ -30,8 +30,7 @@ router.post('/sync', async (req, res, next) => {
           id, 
           email, 
           full_name: full_name || '',
-          avatar_url: avatar_url || '',
-          updated_at: new Date().toISOString()
+          avatar_url: avatar_url || ''
         }, 
         { onConflict: 'id' }
       )

@@ -55,31 +55,33 @@ router.post('/analyze', async (req, res, next) => {
       throw new Error(`Failed to fetch checkins: ${checkinError.message}`);
     }
 
-    // 3. Build AI Prompt
-    const prompt = `You are an AI life coach analyzing a user's progress.
+    // 3. Build AI Prompt (GOD MODE)
+    const prompt = `You are the CORE INTELLIGENCE of a high-performance Life OS.
+Analyze the user's trajectory based on their goals and recent check-ins.
 
 Goals:
 ${JSON.stringify(goals, null, 2)}
 
-Last 7 days data:
+Check-ins (Last 7 Days):
 ${JSON.stringify(checkins || [], null, 2)}
 
-Analyze the user's progress and for each goal:
-1. Calculate the current progress percentage (0-100)
-2. If they've completely conquered the problem, output 100
-3. Provide 1-sentence Hinglish feedback based on recent trajectory
+TASK:
+1. Update progress percentages (0-100) based on consistency and journal entries.
+2. Calculate "Predictive Trajectory": When will they hit 100% at this rate?
+3. Generate "Deep Analysis" in Markdown. It MUST include:
+   - ## 🧠 Psychological Profile: Burnout risk, dopamine levels, and consistency analysis.
+   - ## ⚡ Predictive Trajectory: Expected date of completion for each sector.
+   - ## 🛠️ Actionable Interventions: 3 specific, high-impact tasks for the next 24 hours.
+   - ## 👑 Mindset Shift: A powerful, short directive to maintain God Mode.
 
-Also provide a "deepAnalysis" which is a 2-3 paragraph markdown report. Include:
-- A summary of their mental state and consistency.
-- 1-2 psychological tips for founders (Hinglish).
-- A powerful "Mindset Shift" quote or thought.
+Tone: Professional, elite, data-driven, slightly futuristic. Use Hinglish where appropriate for relatability.
 
-RETURN ONLY valid JSON (no markdown outside the JSON):
+RETURN ONLY valid JSON:
 {
   "goalUpdates": [
-    { "goal_id": "uuid", "new_percentage": 85, "feedback": "Kaafi improvement hai, aise hi karte raho!" }
+    { "goal_id": "uuid", "new_percentage": 85, "feedback": "Solid consistency in sector 1." }
   ],
-  "deepAnalysis": "# Weekly Report\n\nYour consistency has been..."
+  "deepAnalysis": "# Core Intelligence Report\n\n..."
 }`;
 
     // 4. Call AI
@@ -136,8 +138,7 @@ RETURN ONLY valid JSON (no markdown outside the JSON):
         const { error: updateError } = await supabase
           .from('goals')
           .update({ 
-            current_progress: progressNum,
-            updated_at: new Date().toISOString()
+            current_progress: progressNum
           })
           .eq('id', update.goal_id);
 
@@ -244,6 +245,65 @@ router.post('/optimize-goals', async (req, res, next) => {
   } catch (error) {
     console.error('Goal optimization error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ====== REAL-TIME AI CHAT ======
+router.post('/chat', async (req, res, next) => {
+  try {
+    const { message, history } = req.body;
+    const userId = req.user?.sub;
+
+    if (!message) return res.status(400).json({ error: 'Message is required' });
+
+    // Fetch context (goals)
+    const { data: goals } = await supabase.from('goals').select('*').eq('user_id', userId);
+
+    const prompt = `You are the CORE INTELLIGENCE of the user's Life OS. 
+User Goals: ${JSON.stringify(goals)}
+Chat History: ${JSON.stringify(history || [])}
+User Message: "${message}"
+
+TASK: Provide a high-impact, elite response. Be proactive. Make decisions for the user if they are indecisive. Help them optimize their time. Tone: Futuristic, professional, slightly demanding.`;
+
+    if (process.env.GEMINI_API_KEY) {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      res.json({ success: true, response: response.text() });
+    } else {
+      res.json({ success: true, response: "Core Intelligence fallback: Keep pushing towards your goals!" });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ====== LIVE TIMETABLE GENERATION ======
+router.get('/timetable', async (req, res, next) => {
+  try {
+    const userId = req.user?.sub;
+
+    // Fetch goals and recent checkins for context
+    const { data: goals } = await supabase.from('goals').select('*').eq('user_id', userId);
+
+    const prompt = `Generate a high-performance daily timetable for a founder with these goals: ${JSON.stringify(goals)}.
+Format the output as a valid JSON array of objects with "time" and "task" keys.
+Example: [{"time": "06:00", "task": "Strategic Planning"}]
+RETURN ONLY VALID JSON.`;
+
+    if (process.env.GEMINI_API_KEY) {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      const timetable = JSON.parse(jsonMatch[0]);
+      res.json({ success: true, timetable });
+    } else {
+      res.json({ success: true, timetable: [{time: "08:00", task: "Default Routine"}] });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
