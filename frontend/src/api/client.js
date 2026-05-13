@@ -1,4 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key-placeholder';
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -10,12 +16,12 @@ export const api = axios.create({
   }
 });
 
-// Request interceptor
+// Request interceptor: Always get the latest session from Supabase
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('supabase_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      config.headers.Authorization = `Bearer ${session.access_token}`;
     }
     return config;
   },
@@ -25,14 +31,13 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor: Handle 401 Unauthorized
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.warn('Unauthorized - token may have expired');
-      localStorage.removeItem('supabase_token');
-      window.location.href = '/login';
+      console.warn('Unauthorized - redirecting to login');
+      // Optional: window.location.href = '/login';
     }
     
     const errorMessage = error.response?.data?.error || error.message || 'API Error';

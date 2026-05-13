@@ -6,6 +6,13 @@ const router = express.Router();
 // ====== POST TODAY'S CHECK-IN ======
 router.post('/', async (req, res, next) => {
   try {
+    const userId = req.user?.sub;
+    const { date, mood, journal_note, logs } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID missing' });
+    }
+
     // 1. Create or Update Checkin using the simplified schema
     const { data: checkin, error: checkinError } = await supabase
       .from('checkins')
@@ -23,7 +30,7 @@ router.post('/', async (req, res, next) => {
       throw new Error(`Failed to create checkin: ${checkinError.message}`);
     }
 
-    res.json({ message: 'Checkin saved successfully', checkin });
+    res.json({ success: true, message: 'Checkin saved successfully', data: checkin });
   } catch (error) {
     console.error("Checkin error:", error);
     res.status(500).json({ error: error.message });
@@ -33,12 +40,20 @@ router.post('/', async (req, res, next) => {
 // ====== GET HISTORICAL CHECK-INS ======
 router.get('/', async (req, res, next) => {
   try {
+    const userId = req.user?.sub;
+    const limit = parseInt(req.query.limit) || 30;
+    const offset = parseInt(req.query.offset) || 0;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID missing' });
+    }
+
     const { data, error } = await supabase
       .from('checkins')
       .select('*')
       .eq('user_id', userId)
       .order('date', { ascending: false })
-      .range(offsetNum, offsetNum + limitNum - 1);
+      .range(offset, offset + limit - 1);
 
     if (error) {
       throw new Error(`Failed to fetch checkins: ${error.message}`);
@@ -48,9 +63,8 @@ router.get('/', async (req, res, next) => {
       success: true,
       data: data || [],
       pagination: {
-        limit: limitNum,
-        offset: offsetNum,
-        total: count || 0
+        limit,
+        offset
       }
     });
   } catch (error) {
@@ -73,8 +87,8 @@ router.get('/:date', async (req, res, next) => {
     }
 
     const { data, error } = await supabase
-      .from('daily_checkins')
-      .select('*, goal_logs(*)')
+      .from('checkins')
+      .select('*')
       .eq('user_id', userId)
       .eq('date', date)
       .single();

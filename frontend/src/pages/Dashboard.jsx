@@ -70,9 +70,24 @@ export default function Dashboard({session}){
     }
 
     // 2. Fetch data
-    const [gr,cr]=await Promise.all([api.get('/goals').catch(()=>({data:[]})),api.get('/checkins').catch(()=>({data:[]}))]);
-    setGoals(gr.data||[]);setCheckins(cr.data||[]);
-    if(!(gr.data||[]).length)setShowOnboard(true);
+    try {
+      const [gr, cr] = await Promise.all([
+        api.get('/goals'),
+        api.get('/checkins')
+      ]);
+      
+      const goalsList = gr.data?.data || [];
+      const checkinsList = cr.data?.data || [];
+      
+      setGoals(goalsList);
+      setCheckins(checkinsList);
+      
+      if (goalsList.length === 0) setShowOnboard(true);
+    } catch (err) {
+      console.error("Data fetch error", err);
+      setGoals([]);
+      setCheckins([]);
+    }
     setLoadingGoals(false);
   }
 
@@ -128,8 +143,8 @@ export default function Dashboard({session}){
     try{
       const{data}=await api.post('/engine/analyze');
       setAiResult(data);
-      const{data:u}=await api.get('/goals');
-      setGoals(u||[]);
+      const goalsRes = await api.get('/goals');
+      setGoals(goalsRes.data?.data || []);
       showT('AI analysis complete ⚡','lime');
     } catch(err){
       setError(err.message);
