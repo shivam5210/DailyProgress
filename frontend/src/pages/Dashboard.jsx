@@ -60,12 +60,14 @@ export default function Dashboard({session}){
     setLoadingGoals(true);
     
     // 1. Sync user to ensure backend Postgres has the user record
-    await api.post('/auth/sync', { 
-      id: user.id, 
-      email: user.email, 
-      full_name: user.user_metadata?.full_name, 
-      avatar_url: user.user_metadata?.avatar_url 
-    }).catch(err => console.error("Sync error", err));
+    if (user?.id) {
+      await api.post('/auth/sync', { 
+        id: user.id, 
+        email: user.email, 
+        full_name: user.user_metadata?.full_name, 
+        avatar_url: user.user_metadata?.avatar_url 
+      }).catch(err => console.error("Sync error", err));
+    }
 
     // 2. Fetch data
     const [gr,cr]=await Promise.all([api.get('/goals').catch(()=>({data:[]})),api.get('/checkins').catch(()=>({data:[]}))]);
